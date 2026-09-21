@@ -9,20 +9,20 @@
 
 :root {
     /* Brand colors */
-    --color-primary: #4a7a6e;       /* deep teal-green: headers, nav, links */
-    --color-primary-dark: #35594f;  /* darker teal: hover/active states */
-    --color-accent: #e0a66a;        /* warm orange: cards, highlights */
-    --color-accent-dark: #c98a49;   /* darker orange: hover states */
+    --color-primary: #4f7aa5;       /* deep blue: headers, nav, links */
+    --color-primary-dark: #365b7c;  /* darker blue: hover/active states */
+    --color-accent: #bfdcf3;        /* soft blue: cards, highlights */
+    --color-accent-dark: #9cb9d4;   /* darker blue: hover states */
 
     /* Text */
-    --color-text: #2d2420;          /* main body text */
-    --color-text-muted: #4d3a2c;    /* secondary text, links on light bg */
+    --color-text: #1f2d3d;          /* main body text */
+    --color-text-muted: #40566d;    /* secondary text, links on light bg */
     --color-text-on-dark: #ffffff;  /* text placed over photos/dark overlays */
 
     /* Backgrounds */
-    --color-bg-page: #f4f4f4;       /* page background on activity/project pages */
+    --color-bg-page: #f4f7fb;       /* page background on activity/project pages */
     --color-bg-card: #ffffff;       /* white card/container background */
-    --color-bg-overlay: rgba(74, 122, 110, 0.5); /* translucent header/hero overlay */
+    --color-bg-overlay: rgba(79, 122, 165, 0.55); /* translucent header/hero overlay */
 
     /* Typography */
     --font-body: Arial, Helvetica, sans-serif;
