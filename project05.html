@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Project 5: Spinograph</title>
+	<link rel="stylesheet" href="./project.css">
+</head>
+<body>
+
+	<header class="header">
+		<nav class="navbar">
+			<a href="./index.html" class="active">Home</a>
+		</nav>
+	</header>
+
+	<div class="proj-container">
+
+		<h1 class='proj-header'>Project Portfolio</h1>
+
+		<div class="proj-img-container">
+			<img src="./images/Spin1.png" alt="LEGO SPIKE Prime Spinograph drawing machine">
+		</div>
+
+		<h2 class='proj-header'>Project 5: Spinograph</h2>
+
+		<div class="proj-desc">
+			<h3>Executive Summary</h3>
+			<p>This project involved designing and programming an automated drawing machine (Spirograph) capable of generating complex geometric patterns. Built using the LEGO SPIKE Prime kit and programmed in <strong>MicroPython</strong>, the machine utilizes two independently controlled motors: a <strong>Large Motor</strong> that rotates the paper platen and a <strong>Medium Motor</strong> that drives the pen mechanism. By adjusting the relative angular velocity between the two axes in code, the system produces precise, repeating mathematical curves.</p>
+
+			<h3>Key Technical Features &amp; Engineering Principles</h3>
+			<h4>1. Dual-Axis Independent Kinematics</h4>
+			<ul>
+				<li><strong>Paper Base (Axis A):</strong> Driven by the <strong>Large Motor</strong> to rotate the paper platform steadily.</li>
+				<li><strong>Pen Mechanism (Axis B):</strong> Driven by a <strong>Medium Motor</strong> to create repeating lateral arc sweeps across the paper surface.</li>
+				<li><strong>Parametric Curve Generation:</strong> The resulting drawn pattern is a continuous mathematical curve determined by the frequency ratio, phase, and relative speeds of the two motors.</li>
+			</ul>
+
+			<h4>2. Algorithmic Ratio Optimization (MicroPython)</h4>
+			<ul>
+				<li><strong>Speed Ratio (5:7):</strong> Through testing different speed combinations, a <strong>5:7 motor speed ratio</strong> (Large Motor to Medium Motor) was selected as the optimal configuration.</li>
+				<li><strong>Symmetry &amp; Closure:</strong> A 5:7 ratio ensures that the pen path creates a balanced, multi-lobed geometric pattern that closes perfectly without prematurely drawing over previous lines.</li>
+				<li><strong>Execution Time:</strong> Optimized the code execution loop to complete a full, high-density pattern cycle in <strong>30 seconds</strong>.</li>
+			</ul>
+
+			<h3>Design Iteration Process</h3>
+			<ol>
+				<li><strong>Iteration 1: Gear Slap &amp; Structural Rigidity</strong>
+					<ul>
+						<li><strong>Problem:</strong> Early physical builds had too much gear backlash (play), causing the pen to jump and produce jagged, asymmetrical lines.</li>
+						<li><strong>Solution:</strong> Stiffened the pen-arm frame and braced the turntable platform to eliminate mechanical play and vibration.</li>
+					</ul>
+				</li>
+				<li><strong>Iteration 2: Pen Pressure Calibration</strong>
+					<ul>
+						<li><strong>Problem:</strong> Too much downward pen pressure stalled the turntable motor, while too little pressure caused faint, broken lines.</li>
+						<li><strong>Solution:</strong> Engineered a counterweighted, passive pivot for the pen arm, allowing gravity to provide consistent, light contact against the rotating paper.</li>
+					</ul>
+				</li>
+				<li><strong>Iteration 3: Software Speed Ratio Testing (MicroPython)</strong>
+					<ul>
+						<li><strong>Problem:</strong> A 1:1 speed ratio produced simple, boring circles/ellipses, while non-integer random ratios caused messy over-scribbling.</li>
+						<li><strong>Solution:</strong> Systematically tested fractional ratios (1:2, 2:3, 3:5) before settling on the <strong>5:7 ratio</strong>, which yielded the best balance of visual complexity, line density, and rapid 30-second completion.</li>
+					</ul>
+				</li>
+			</ol>
+		</div>
+
+		<div class="proj-video-container">
+			<iframe src="https://www.youtube.com/embed/8y1N9qw8UqQ" title="Project 5: Spinograph demonstration" allowfullscreen></iframe>
+		</div>
+
+	</div>
+
+</body>
+</html>
