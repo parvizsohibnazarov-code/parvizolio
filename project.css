@@ -89,6 +89,11 @@ body {
     margin: auto;
 }
 
+.proj-code summary {
+    cursor: pointer;
+    font-weight: bold;
+}
+
 .proj-code pre:has(code), pre:has(code) {
     background-color: black;
     color: white;

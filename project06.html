@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Project 6: Square Plotter 3000</title>
+	<link rel="stylesheet" href="./project.css">
+</head>
+<body>
+
+	<header class="header">
+		<nav class="navbar">
+			<a href="./index.html" class="active">Home</a>
+		</nav>
+	</header>
+
+	<div class="proj-container">
+
+		<h1 class='proj-header'>Project Portfolio</h1>
+
+		<div class="proj-img-container">
+			<img src="./images/View recent photos.png" alt="LEGO SPIKE Prime robot set up to draw a square with a marker">
+		</div>
+
+		<h2 class='proj-header'>Project 6: Square Plotter 3000</h2>
+
+		<div class="proj-desc">
+			<h3>Executive Summary</h3>
+			<p>Square Plotter 3000 is a LEGO SPIKE Prime differential-drive robot programmed with MicroPython. It uses two drive motors and a Sharpie marker to draw a square. The program commands each straight side using calculated wheel-rotation degrees, then uses the hub's yaw sensor to determine when each 90-degree turn is complete.</p>
+
+			<h3>Key Technical Features &amp; Engineering Principles</h3>
+			<h4>1. Differential Drive and Vector Path Execution</h4>
+			<ul>
+				<li><strong>Independent motor control:</strong> The left and right drive motors can be controlled separately.</li>
+				<li><strong>Straight-line motion:</strong> Both motors drive forward to trace each side of the square.</li>
+				<li><strong>Pivot turns:</strong> The motors run in opposite directions to rotate the robot at each corner.</li>
+				<li><strong>Marker placement:</strong> The Sharpie is mounted near the chassis centerline to reduce its offset during turns.</li>
+			</ul>
+
+			<h4>2. Programmed Path Sequence and Sensor Feedback</h4>
+			<p>The program repeats a sequence of driving one side and turning right four times. Wheel diameter and the 120 mm side length are used to calculate the motor rotation for each straight segment. For each turn, the program resets yaw and keeps turning until the sensor reaches 900 decidegrees (90 degrees), within the sensor's available reading precision.</p>
+
+			<h3>Design Iteration Process</h3>
+			<ol>
+				<li><strong>Iteration 1: Wheel Slip and Skidding</strong>
+					<ul>
+						<li><strong>Problem:</strong> Fast pivot turns caused the wheels to slip, making turns fall short of 90 degrees and leaving the square unclosed.</li>
+						<li><strong>Solution:</strong> The turn speed was reduced to improve traction and turn accuracy.</li>
+					</ul>
+				</li>
+				<li><strong>Iteration 2: Marker Drag and Smudging</strong>
+					<ul>
+						<li><strong>Problem:</strong> Locking the marker rigidly against the paper added friction, slowing the motors and affecting straight-line tracking.</li>
+						<li><strong>Solution:</strong> A slightly compliant mount using rubber bands and a loose hinge pin allowed the marker to contact the paper without pressing down as firmly.</li>
+					</ul>
+				</li>
+			</ol>
+		</div>
+
+		<div class="proj-video-container">
+			<iframe src="https://www.youtube.com/embed/nF8rFE3eS2Q" title="Project 6: Square Plotter 3000 demonstration" allowfullscreen></iframe>
+		</div>
+
+		<div class="proj-code">
+			<details>
+				<summary>Show the MicroPython code</summary>
+				<pre><code># Setup: medium drive motors on ports A (left) and B (right).
+# Assumption: the wheels are 56 mm in diameter.
+from hub import port, motion_sensor
+import runloop
+import motor_pair
+
+# Change this if your wheels have a different diameter.
+WHEEL_DIAMETER_MM = 56
+
+# Each side of the square is 120 mm.
+SIDE_LENGTH_MM = 120
+
+# Adjust these speeds if needed. Slower speeds reduce overshooting.
+DRIVE_SPEED = 120
+TURN_SPEED = 60  # Slower turn speed improves angle accuracy
+
+# Yaw values in decidegrees (90 degrees = 900 decidegrees)
+TARGET_YAW = 900
+TOLERANCE = 15   # Allow a small window to catch the angle cleanly
+
+# Convert the side length into wheel rotation degrees.
+WHEEL_CIRCUMFERENCE_MM = 3.1416 * WHEEL_DIAMETER_MM
+SIDE_DEGREES = int(SIDE_LENGTH_MM * 360 / WHEEL_CIRCUMFERENCE_MM)
+
+async def main():
+    # Pair the left and right drive motors.
+    motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)
+
+    # Let the hub settle before reading sensors
+    await runloop.sleep_ms(500)
+
+    # Draw four sides, turning right after each one.
+    for side in range(4):
+        # Drive forward by SIDE_DEGREES.
+        await motor_pair.move_for_degrees(
+            motor_pair.PAIR_1,
+            SIDE_DEGREES,
+            0,
+            velocity=DRIVE_SPEED
+        )
+
+        # Stop briefly to let momentum settle
+        motor_pair.stop(motor_pair.PAIR_1)
+        await runloop.sleep_ms(100)
+
+        # Reset yaw so the turn starts cleanly at 0
+        motion_sensor.reset_yaw(0)
+        await runloop.sleep_ms(100)
+
+        # Turn right: Left motor forward, Right motor backward
+        motor_pair.move_tank(motor_pair.PAIR_1, TURN_SPEED, -TURN_SPEED)
+
+        # Keep turning until the yaw hits the target angle.
+        # Note: Depending on hub orientation, yaw might be positive or negative.
+        # Using abs() ensures it catches the magnitude correctly.
+        while abs(motion_sensor.tilt_angles()[0]) &lt; TARGET_YAW:
+            await runloop.sleep_ms(5)
+
+        # Stop the turn immediately
+        motor_pair.stop(motor_pair.PAIR_1)
+        await runloop.sleep_ms(200) # Give it time to fully halt
+
+    # Unpair the motors when the square is complete.
+    motor_pair.unpair(motor_pair.PAIR_1)
+
+runloop.run(main())</code></pre>
+			</details>
+		</div>
+
+	</div>
+
+</body>
+</html>
