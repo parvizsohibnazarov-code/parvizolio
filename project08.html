@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Project 8: Astronaut Tool</title>
+	<link rel="stylesheet" href="./project.css">
+</head>
+<body>
+
+	<header class="header">
+		<nav class="navbar">
+			<a href="./index.html" class="active">Home</a>
+		</nav>
+	</header>
+
+	<div class="proj-container">
+
+		<h1 class='proj-header'>Project Portfolio</h1>
+
+		<h2 class='proj-header'>Project 8: Astronaut Tool</h2>
+
+		<div class="proj-desc">
+			<h3>Project Overview</h3>
+			<p>The Astronaut Tool is a Smart Mechatronic Screwdriver built with LEGO SPIKE Prime hardware and custom MicroPython firmware. It is designed for repetitive fastening and unfastening tasks. A force sensor controls the motor speed, while a release-triggered state machine alternates the tool between screwing and unscrewing.</p>
+
+			<h3>Key Engineering Features</h3>
+			<ul>
+				<li><strong>Coupled motor drive:</strong> A Large Motor on Port E and Medium Motors on Ports A and C work together through a synchronized, gear-coupled drive train.</li>
+				<li><strong>Force-responsive speed:</strong> The Force Sensor on Port B maps applied force to motor speed, from 0 to 800 degrees per second, with a deadband to prevent small idle readings from moving the motors.</li>
+				<li><strong>Toggle-on-release control:</strong> Releasing the sensor switches the direction between counter-clockwise unscrewing and clockwise screwing.</li>
+				<li><strong>LED direction preview:</strong> The hub's 5 by 5 light matrix displays an arrow for the next operation.</li>
+				<li><strong>Smoothed acceleration:</strong> The program gradually moves motor speed toward the force-based target speed to reduce abrupt starts.</li>
+			</ul>
+
+			<h3>Class Tournament</h3>
+			<p>I won the class tournament for the best astronaut tool with this project. The video below shows the tournament finals.</p>
+		</div>
+
+		<div class="proj-video-container">
+			<iframe src="https://www.youtube.com/embed/59ykPlivOnM" title="Astronaut Tool winning the class tournament finals" allowfullscreen></iframe>
+		</div>
+
+		<div class="proj-code">
+			<details>
+				<summary>Show the MicroPython code</summary>
+				<pre><code>from hub import port, light_matrix
+import runloop
+import motor
+import force_sensor
+
+# System Configuration
+MOTORS = (port.E, port.A, port.C)
+MAX_SPEED = 800
+DEADBAND = 3           # Threshold to eliminate minor surface noise/chatter
+SMOOTHING_FACTOR = 0.4 # Linear interpolation coefficient for gear protection
+
+# 5x5 Custom Arrow Matrices (0-9 brightness scale)
+ARROW_CCW = [
+    0, 9, 0, 0, 0,
+    9, 9, 9, 9, 9,
+    0, 9, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+]
+
+ARROW_CW = [
+    0, 0, 0, 9, 0,
+    9, 9, 9, 9, 9,
+    0, 0, 0, 9, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+]
+
+async def main():
+    current_direction = -1  # -1 = Counter-Clockwise (Unscrew), 1 = Clockwise (Screw)
+    was_pressed = False
+    current_speed = 0.0
+
+    print("Smart Drill System Initialized.")
+    light_matrix.show(ARROW_CCW)
+
+    while True:
+        is_pressed = force_sensor.pressed(port.B)
+        force = force_sensor.force(port.B) if is_pressed else 0
+
+        # Toggle state machine on the falling edge (sensor release)
+        if was_pressed and not is_pressed:
+            current_direction = -current_direction
+
+            # Update visual UI preview for the next operation
+            if current_direction == -1:
+                light_matrix.show(ARROW_CCW)
+            else:
+                light_matrix.show(ARROW_CW)
+
+        # Apply deadband filter to prevent idle motor jitter
+        if force &lt; DEADBAND:
+            target_speed = 0
+        else:
+            target_speed = int(force * MAX_SPEED / 100)
+
+        # Smooth acceleration profile to mitigate mechanical backlash
+        current_speed += (target_speed - current_speed) * SMOOTHING_FACTOR
+        actual_speed = int(current_speed)
+
+        # Execute motor commands across all coupled ports
+        if is_pressed and actual_speed &gt; 0:
+            final_velocity = current_direction * actual_speed
+            for p in MOTORS:
+                motor.run(p, final_velocity)
+        else:
+            for p in MOTORS:
+                motor.stop(p)
+
+        was_pressed = is_pressed
+        await runloop.sleep_ms(20)
+
+runloop.run(main())</code></pre>
+			</details>
+		</div>
+
+	</div>
+
+</body>
+</html>
