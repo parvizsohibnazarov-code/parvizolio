@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Project 9: Automated Ball Transfer Mechanism</title>
+	<link rel="stylesheet" href="./project.css">
+</head>
+<body>
+
+	<header class="header">
+		<nav class="navbar">
+			<a href="./index.html" class="active">Home</a>
+		</nav>
+	</header>
+
+	<div class="proj-container">
+
+		<h1 class='proj-header'>Project Portfolio</h1>
+
+		<div class="proj-img-container">
+			<img src="./images/project09.png" alt="LEGO SPIKE Prime automated ball transfer mechanism with a guided track and kicking arm">
+		</div>
+
+		<h2 class='proj-header'>Project 9: Automated Ball Transfer Mechanism</h2>
+
+		<div class="proj-desc">
+			<h3>Project Overview</h3>
+			<p>This project involved designing, prototyping, and programming an automated transfer system using the LEGO SPIKE Prime kit. The mechanism detects a ping-pong ball at a starting position (Point A) and propels it along a constrained track to a destination platform (Point B), using sensor feedback and motor control.</p>
+
+			<h3>System Architecture &amp; Hardware Design</h3>
+			<ul>
+				<li><strong>Structural track:</strong> Modular yellow studded plates and parallel black liftarm guide rails constrain the ball's path toward the destination.</li>
+				<li><strong>Sensing subsystem:</strong> A LEGO optical/color sensor beneath Point A monitors reflected light to detect when a ball is present.</li>
+				<li><strong>Actuation subsystem:</strong> A LEGO SPIKE Prime Medium Motor drives a sweeping arm that converts rotational motion into a kick to propel the ball.</li>
+			</ul>
+
+			<h3>Control Software &amp; Implementation</h3>
+			<p>The system uses an asynchronous, event-driven MicroPython loop with hub libraries for motor positioning and sensor polling.</p>
+		</div>
+
+		<div class="proj-code">
+			<details>
+				<summary>Show the MicroPython code</summary>
+				<pre><code>from hub import port
+import runloop
+import motor
+import color_sensor
+
+# Reflection above this value means a ball is present.
+REFLECTION_THRESHOLD = 10
+
+# Set the encoder baseline and movement amounts.
+BASELINE_ANGLE = 190
+CLOCKWISE_OFFSET = 50
+KICK_DEGREES = -260
+POSITION_SPEED = 100
+KICK_SPEED = 410
+
+# Check whether the sensor detects a ball.
+def ball_detected():
+    return color_sensor.reflection(port.F) &gt; REFLECTION_THRESHOLD
+
+async def main():
+    # Move the kicker to its baseline position at startup.
+    await motor.run_to_absolute_position(
+        port.E, BASELINE_ANGLE, POSITION_SPEED
+    )
+
+    print("System armed. Waiting for ball at Point A...")
+
+    # Keep checking for a ball.
+    while True:
+        if ball_detected():
+            print("Ball detected! Kicking...")
+
+            # Wind up the kicker.
+            await motor.run_for_degrees(
+                port.E, CLOCKWISE_OFFSET, POSITION_SPEED
+            )
+
+            # Kick.
+            await motor.run_for_degrees(
+                port.E, KICK_DEGREES, KICK_SPEED
+            )
+
+            # Let the ball travel.
+            await runloop.sleep_ms(200)
+
+            # Return to the same encoder baseline, choosing the clockwise route.
+            await motor.run_to_absolute_position(
+                port.E,
+                BASELINE_ANGLE,
+                POSITION_SPEED,
+                direction=motor.CLOCKWISE
+            )
+
+            # Let the sensor settle before checking again.
+            await runloop.sleep_ms(1000)
+
+            print("Ready for next ball.")
+
+        # Pause briefly between sensor checks.
+        await runloop.sleep_ms(50)
+
+runloop.run(main())</code></pre>
+			</details>
+		</div>
+
+		<div class="proj-video-container">
+			<iframe src="https://www.youtube.com/embed/Y6f-dyRlZLU" title="Automated ball transfer mechanism demonstration" allowfullscreen></iframe>
+		</div>
+
+		<div class="proj-desc">
+			<h3>Engineering Challenges &amp; Iterations</h3>
+			<ol>
+				<li><strong>Optical threshold calibration</strong>
+					<ul>
+						<li><strong>Challenge:</strong> Changes in ambient lighting caused false sensor triggers.</li>
+						<li><strong>Solution:</strong> A reflection threshold of 10 and a polling loop were used to detect the ball at Point A.</li>
+					</ul>
+				</li>
+				<li><strong>Spatial constraints &amp; collision avoidance</strong>
+					<ul>
+						<li><strong>Challenge:</strong> The motor's default shortest-path homing could swing the arm backward into the support structure.</li>
+						<li><strong>Solution:</strong> The return command specifies clockwise rotation, keeping the arm's return movement in one direction to avoid the structure.</li>
+					</ul>
+				</li>
+			</ol>
+
+			<h3>Skills &amp; Competencies</h3>
+			<ul>
+				<li><strong>Mechatronic prototyping:</strong> Integrating structural elements, sensors, and actuators within limited space.</li>
+				<li><strong>Embedded programming:</strong> Writing asynchronous MicroPython logic for sensor monitoring and motor control.</li>
+				<li><strong>Iterative troubleshooting:</strong> Addressing a mechanical collision issue through motor direction control in software.</li>
+			</ul>
+		</div>
+
+	</div>
+
+</body>
+</html>
