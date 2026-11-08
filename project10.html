@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Project 10: Haunted House</title>
+	<title>Project 10: Automated Haunted House Scare Contraption</title>
 	<link rel="stylesheet" href="./project.css">
 </head>
 <body>
@@ -16,10 +16,60 @@
 
 		<h1 class='proj-header'>Project Portfolio</h1>
 
-		<h2 class='proj-header'>Project 10: Haunted House</h2>
+		<div class="proj-img-container">
+			<img src="./images/project10.png" alt="A Halloween candy box decorated with a “Free Candy” sign and glowing lights">
+		</div>
+
+		<h2 class='proj-header'>Project 10: Automated Haunted House Scare Contraption (“Free Candy”)</h2>
 
 		<div class="proj-desc">
-			<p>Project details, photos, and videos will be added soon.</p>
+			<h3>Project Overview</h3>
+			<p>This interactive Halloween contraption is presented as a “Free Candy” box. Built with LEGO SPIKE Prime and programmed in MicroPython, it uses a distance sensor to detect an approaching hand and trigger a mechanical skeleton hand to move out and return to its resting position.</p>
+
+			<h3>Sensor-Driven Triggering</h3>
+			<p>A distance sensor connected to port D monitors the inside of the box. The program checks the sensor every 50 milliseconds and triggers the sequence when an object is detected within 100 mm.</p>
+
+			<h3>Synchronized Motor Actuation</h3>
+			<p>Motors on ports A and B are paired so they move together. The paired motors make a fast 90-degree strike at 1050 degrees per second, pause for 500 milliseconds, then retract at 200 degrees per second. The program also runs an action on the motor connected to port E.</p>
+		</div>
+
+		<div class="proj-code">
+			<details>
+				<summary>Show the MicroPython code</summary>
+				<pre><code>from hub import port
+import runloop
+import distance_sensor
+import motor
+import motor_pair
+
+# Set the motor speed in degrees per second.
+SPEED = 360
+
+async def main():
+    motor_a_init = motor.absolute_position(port.A)
+    # Pair motors on port A and B
+    motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)
+
+    while True:
+        while True:
+            # Poll distance sensor; trigger if an object is within 100mm
+            if (distance_sensor.distance(port.D) != -1 and distance_sensor.distance(port.D) &lt;= 100):
+                break
+            await runloop.sleep_ms(50)
+
+        # Trigger auxiliary action and rapid strike sequence
+        motor.run_for_degrees(port.E, 360, 300)
+        await motor_pair.move_for_degrees(motor_pair.PAIR_1, -90, 0, velocity=1050)
+        await runloop.sleep_ms(500)
+        # Slow controlled reset
+        await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)
+
+runloop.run(main())</code></pre>
+			</details>
+		</div>
+
+		<div class="proj-video-container">
+			<iframe src="https://www.youtube.com/embed/zkW4otWgwxE" title="Automated Haunted House Scare Contraption demonstration" allowfullscreen></iframe>
 		</div>
 
 	</div>
