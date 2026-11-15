@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Project 14: Smart Walker (Reinforcement Learning Bipedal Optimization)</title>
+	<link rel="stylesheet" href="./project.css">
+</head>
+<body>
+
+	<header class="header">
+		<nav class="navbar">
+			<a href="./index.html" class="active">Home</a>
+		</nav>
+	</header>
+
+	<div class="proj-container">
+
+		<h1 class='proj-header'>Project Portfolio</h1>
+
+		<h2 class='proj-header'>Project 14: Smart Walker (Reinforcement Learning Bipedal Optimization)</h2>
+
+		<div class="proj-desc">
+			<h3>Project Overview</h3>
+			<p>The Smart Walker project applies reinforcement learning to a LEGO SPIKE Prime robot with asymmetrical, lopsided legs. Starting from the “Silly Walk” design, the goal is to train the robot to compensate for its irregular movement and walk in a straight line.</p>
+
+			<h3>Mechanical Design and Stability</h3>
+			<p>Multiple leg designs were tested to explore how leg geometry affects the robot's gait and control. The robot also uses structural safeguards intended to help maintain traction and prevent tipping during motor actuation.</p>
+
+			<h3>Reinforcement Learning and Gait Control</h3>
+			<p>A Q-table-based reinforcement learning framework maps states to motor-control actions. Across training runs, the agent updates its action values to favor movements that correct directional drift and improve straight-line tracking.</p>
+
+			<h3>Analysis</h3>
+			<p>Companion software tools are used to run control scripts and visualize the Q-table, making it possible to inspect how the learned policy changes over training episodes.</p>
+
+			<h3>Project Specifications</h3>
+			<ul>
+				<li><strong>Platform:</strong> LEGO SPIKE Prime Hub and custom mechanics</li>
+				<li><strong>Mechanical design:</strong> Asymmetric legs, with multiple iterations tested</li>
+				<li><strong>Learning model:</strong> Reinforcement learning with Q-table policy optimization</li>
+				<li><strong>Objective:</strong> Train the robot to move from an erratic “Silly Walk” toward straight-line tracking</li>
+				<li><strong>Analysis tools:</strong> Script execution and Q-table visualization</li>
+			</ul>
+		</div>
+
+	</div>
+
+</body>
+</html>
