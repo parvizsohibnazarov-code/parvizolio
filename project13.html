@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Project 13: 1D Color Search (Reinforcement Learning Robot)</title>
+	<link rel="stylesheet" href="./project.css">
+</head>
+<body>
+
+	<header class="header">
+		<nav class="navbar">
+			<a href="./index.html" class="active">Home</a>
+		</nav>
+	</header>
+
+	<div class="proj-container">
+
+		<h1 class='proj-header'>Project Portfolio</h1>
+
+		<div class="proj-img-container">
+			<img src="./images/project13.jpg" alt="LEGO SPIKE Prime hub and color sensor positioned among colored LEGO bricks for a 1D search">
+		</div>
+
+		<h2 class='proj-header'>Project 13: 1D Color Search (Reinforcement Learning Robot)</h2>
+
+		<div class="proj-desc">
+			<h3>Project Overview</h3>
+			<p>This project uses a LEGO SPIKE Prime robot to search a one-dimensional track for a green LEGO brick while avoiding black boundary bricks. The robot uses Q-learning and a Q-table to learn which actions to take in each state through repeated training episodes and rewards.</p>
+
+			<h3>Hardware and Color Sensing</h3>
+			<p>The setup uses a motor on Port B to move the search mechanism and a Color Sensor on Port D to identify colored positions. A diagnostic script, <code>read_color.py</code>, is used to calibrate readings and distinguish green target, black boundary, and neutral states.</p>
+
+			<h3>Q-Learning and Training</h3>
+			<p>The Q-table stores the expected value of available actions for each state. The robot receives a positive reward for reaching the green goal and a negative penalty for encountering a black boundary. Across training episodes, it uses these rewards to improve its navigation policy.</p>
+
+			<h3>Software and Performance Tracking</h3>
+			<p>The MicroPython program, <code>rl_color_search.py</code>, runs on the SPIKE Prime hub. An external web dashboard visualizes learning curves, state-action values, and policy convergence during training.</p>
+
+			<h3>Project Specifications</h3>
+			<ul>
+				<li><strong>Controller:</strong> LEGO SPIKE Prime Hub</li>
+				<li><strong>Actuator:</strong> Motor on Port B</li>
+				<li><strong>Sensor:</strong> Color Sensor on Port D</li>
+				<li><strong>Programming environment:</strong> MicroPython</li>
+				<li><strong>Learning model:</strong> Q-learning with a Q-table</li>
+				<li><strong>Objective:</strong> Find the green goal while avoiding black boundary markers on a 1D track</li>
+			</ul>
+		</div>
+
+		<div class="proj-video-container">
+			<iframe src="https://www.youtube.com/embed/sSZDEV8ETOk" title="1D Color Search reinforcement learning robot demonstration" allowfullscreen></iframe>
+		</div>
+
+	</div>
+
+</body>
+</html>
